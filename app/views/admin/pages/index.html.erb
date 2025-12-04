@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="section-header">
+    <h1>Static pages</h1>
+    <p class="section-subtitle">
+      Edit the content for the About and Contact pages.
+    </p>
+  </div>
+
+  <% if @pages.empty? %>
+    <p class="text-muted">No pages found.</p>
+  <% else %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Slug</th>
+          <th>Title</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @pages.each do |page| %>
+          <tr>
+            <td><%= page.slug %></td>
+            <td><%= page.title %></td>
+            <td class="text-right">
+              <%= link_to "Edit",
+                          edit_admin_page_path(page.slug),
+                          class: "btn btn-secondary btn-small" %>
+              <%# quick links to public view %>
+              <% if page.slug == 'about' %>
+                <%= link_to "View",
+                            about_path,
+                            class: "btn btn-primary btn-small" %>
+              <% elsif page.slug == 'contact' %>
+                <%= link_to "View",
+                            contact_path,
+                            class: "btn btn-primary btn-small" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

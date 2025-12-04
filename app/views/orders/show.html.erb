@@ -1,0 +1,103 @@
+<h1>Order #<%= @order.id %></h1>
+<p><strong>Date:</strong> <%= @order.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+
+
+<% if @order.customer %>
+  <div class="card">
+    <h2>Customer & shipping details</h2>
+    <p>
+      <strong><%= @order.customer.name %></strong><br>
+      <%= @order.shipping_address %><br>
+      <%= @order.city %>, <%= @order.province %> <%= @order.postal_code %><br>
+      <%= @order.customer.email %>
+    </p>
+  </div>
+<% end %>
+
+<p class="text-muted mt-2">
+  Taxes calculated based on province:
+  <span class="badge-province"><%= @order.province.presence || "N/A" %></span>
+</p>
+
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Unit Price</th>
+      <th>Line Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @order.order_items.each do |item| %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td><%= item.quantity %></td>
+        <td><%= number_to_currency(item.unit_price_at_purchase) %></td>
+        <td><%= number_to_currency(item.subtotal) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="totals" style="max-width: 300px; margin-left:auto;">
+  <table class="table">
+  <tbody>
+    <% gst_rate = tax_rate_percentage(@order.gst_amount, @order.subtotal) %>
+    <% pst_rate = tax_rate_percentage(@order.pst_amount, @order.subtotal) %>
+    <% hst_rate = tax_rate_percentage(@order.hst_amount, @order.subtotal) %>
+
+    <tr>
+      <th>Subtotal:</th>
+      <td class="text-right"><%= number_to_currency(@order.subtotal) %></td>
+    </tr>
+
+    <% if @order.gst_amount.to_f > 0 %>
+      <tr>
+        <th>
+          GST
+          <% if gst_rate %>
+            <span class="badge-tax"><%= gst_rate %>%</span>
+          <% end %>
+        </th>
+        <td class="text-right"><%= number_to_currency(@order.gst_amount) %></td>
+      </tr>
+    <% end %>
+
+    <% if @order.pst_amount.to_f > 0 %>
+      <tr>
+        <th>
+          PST
+          <% if pst_rate %>
+            <span class="badge-tax"><%= pst_rate %>%</span>
+          <% end %>
+        </th>
+        <td class="text-right"><%= number_to_currency(@order.pst_amount) %></td>
+      </tr>
+    <% end %>
+
+    <% if @order.hst_amount.to_f > 0 %>
+      <tr>
+        <th>
+          HST
+          <% if hst_rate %>
+            <span class="badge-tax"><%= hst_rate %>%</span>
+          <% end %>
+        </th>
+        <td class="text-right"><%= number_to_currency(@order.hst_amount) %></td>
+      </tr>
+    <% end %>
+
+    <tr>
+      <th>Grand Total:</th>
+      <td class="text-right">
+        <strong><%= number_to_currency(@order.total_price) %></strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+</div>

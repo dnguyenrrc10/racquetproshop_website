@@ -1,0 +1,81 @@
+<div class="card">
+  <div class="section-header">
+    <h1>Admin dashboard</h1>
+    <p class="section-subtitle">
+      Overview of Racquets Pro Shop performance and catalog.
+    </p>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-label">Total products</div>
+      <div class="hero-stat-value"><%= @products_count %></div>
+    </div>
+
+    <div class="hero-stat">
+      <div class="hero-stat-label">Total orders</div>
+      <div class="hero-stat-value"><%= @orders_count %></div>
+    </div>
+
+    <div class="hero-stat">
+      <div class="hero-stat-label">Registered users</div>
+      <div class="hero-stat-value"><%= @users_count %></div>
+    </div>
+  </div>
+
+  <div class="mt-3">
+    <%= link_to "Manage products", admin_products_path, class: "btn btn-primary btn-small" %>
+    <%= link_to "Manage categories", admin_categories_path, class: "btn btn-secondary btn-small" %>
+  </div>
+</div>
+
+<div class="card">
+  <div class="section-header">
+    <h2>Recent orders</h2>
+    <p class="section-subtitle">Last 10 orders placed by customers.</p>
+  </div>
+
+  <% recent_orders = Order.includes(:user).order(order_date: :desc).limit(10) %>
+
+  <% if recent_orders.empty? %>
+    <p class="text-muted">No orders yet.</p>
+  <% else %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Customer</th>
+          <th>Status</th>
+          <th>Order date</th>
+          <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% recent_orders.each do |order| %>
+          <tr>
+            <td><%= order.id %></td>
+            <td><%= order.user&.name.presence || order.user&.email %></td>
+            <td><%= order.status.titleize %></td>
+            <td><%= order.order_date&.strftime("%Y-%m-%d %H:%M") %></td>
+            <td class="text-right"><%= number_to_currency(order.total_price) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<div class="card">
+  <div class="section-header">
+    <h2>Catalog shortcuts</h2>
+    <p class="section-subtitle">Quick links for catalog maintenance.</p>
+  </div>
+
+  <ul>
+    <li><%= link_to "Create new product", new_admin_product_path %></li>
+    <li><%= link_to "Create new category", new_admin_category_path %></li>
+    <li><%= link_to "View all products", admin_products_path %></li>
+    <li><%= link_to "View all categories", admin_categories_path %></li>
+    <li><%= link_to "Edit About & Contact pages", admin_pages_path %></li>
+  </ul>
+</div>

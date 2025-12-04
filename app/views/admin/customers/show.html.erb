@@ -1,0 +1,61 @@
+<h1>Customer: <%= @customer.email %></h1>
+
+<p>
+  <% if @customer.respond_to?(:name) && @customer.name.present? %>
+    <strong>Name:</strong> <%= @customer.name %><br>
+  <% end %>
+  <strong>Email:</strong> <%= @customer.email %><br>
+</p>
+
+<h2>Orders</h2>
+
+<% if @customer.orders.any? %>
+  <% @customer.orders.order(created_at: :desc).each do |order| %>
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div class="card-header">
+        Order #<%= order.id %> - <%= order.created_at.strftime("%Y-%m-%d %H:%M") %>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Line Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% order.order_items.each do |item| %>
+              <tr>
+                <td><%= item.product.name %></td>
+                <td><%= item.quantity %></td>
+                <td><%= number_to_currency(item.unit_price) %></td>
+                <td><%= number_to_currency(item.line_total) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <div style="max-width: 300px; margin-left:auto;">
+          <table class="table table-sm">
+            <tr>
+              <th>Subtotal:</th>
+              <td><%= number_to_currency(order.subtotal) %></td>
+            </tr>
+            <tr>
+              <th>Tax:</th>
+              <td><%= number_to_currency(order.tax_amount) %></td>
+            </tr>
+            <tr>
+              <th>Grand Total:</th>
+              <td><%= number_to_currency(order.grand_total) %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <p>This customer has no orders.</p>
+<% end %>

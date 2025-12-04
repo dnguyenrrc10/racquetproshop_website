@@ -1,0 +1,76 @@
+<div class="card">
+  <div class="section-header">
+    <h1>Checkout</h1>
+    <p class="section-subtitle">
+      Confirm your items and shipping details.
+    </p>
+  </div>
+
+  <% if @cart_items.blank? %>
+    <p>Your cart is empty.</p>
+    <%= link_to "Back to shop", products_path, class: "btn btn-primary" %>
+  <% else %>
+    <!-- Order items -->
+    <div class="card">
+      <h2>Order items</h2>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% subtotal_sum = 0 %>
+          <% @cart_items.each do |item| %>
+            <% product    = item[:product] %>
+            <% qty        = item[:quantity] %>
+            <% unit_price = product.effective_price %>
+            <% subtotal   = unit_price * qty %>
+            <% subtotal_sum += subtotal %>
+            <tr>
+              <td><%= product.name %></td>
+              <td><%= qty %></td>
+              <td><%= number_to_currency(unit_price) %></td>
+              <td><%= number_to_currency(subtotal) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <p class="text-right">
+        <strong>Items subtotal: <%= number_to_currency(subtotal_sum) %></strong>
+      </p>
+      <p class="text-muted">
+        Taxes (GST/PST/HST) will be calculated based on your province and shown on the invoice after you place the order.
+      </p>
+    </div>
+
+    <!-- Shipping / customer details (from user profile) -->
+    <div class="card mt-3">
+      <h2>Shipping & customer details</h2>
+
+      <p>
+        <strong><%= @user.name.presence || @user.email %></strong><br>
+        <%= @user.address %><br>
+        <%= @user.city %>, <%= @user.province %> <%= @user.postal_code %><br>
+        <%= @user.email %>
+      </p>
+
+      <p class="text-muted">
+        To change your address or province, update your profile:
+        <%= link_to "Edit profile", edit_user_registration_path %>
+      </p>
+
+      <%= form_with url: orders_path, method: :post, local: true do |f| %>
+        <div class="mt-3 text-right">
+          <%= link_to "Back to cart", cart_path, class: "btn btn-secondary" %>
+          <%= f.submit "Pay with credit card (Stripe test)", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

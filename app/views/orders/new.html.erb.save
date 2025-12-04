@@ -1,0 +1,103 @@
+<div class="card">
+  <div class="section-header">
+    <h1>Checkout</h1>
+    <p class="section-subtitle">
+      Confirm your details and order before placing it.
+    </p>
+  </div>
+
+  <% if @cart_items.blank? %>
+    <p>Your cart is empty.</p>
+    <%= link_to "Back to shop", products_path, class: "btn btn-primary" %>
+  <% else %>
+    <div class="card">
+      <h2>Shipping details</h2>
+      <p class="text-muted">
+        We’ll ship to the address saved in your account.
+      </p>
+
+      <p>
+        <strong><%= current_user.name.presence || current_user.email %></strong><br>
+        <% if current_user.address.present? %>
+          <%= current_user.address %>
+        <% else %>
+          <span class="text-muted">
+            No address on file. You can update it later in your profile.
+          </span>
+        <% end %>
+      </p>
+    </div>
+
+    <div class="card mt-3">
+      <h2>Order items</h2>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% subtotal_sum = 0 %>
+          <% @cart_items.each do |item| %>
+            <% product = item[:product] %>
+            <% qty = item[:quantity] %>
+            <% unit_price = product.effective_price %>
+            <% subtotal = unit_price * qty %>
+            <% subtotal_sum += subtotal %>
+            <tr>
+              <td><%= product.name %></td>
+              <td><%= qty %></td>
+              <td><%= number_to_currency(unit_price) %></td>
+              <td><%= number_to_currency(subtotal) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% estimated_tax = (subtotal_sum * 0.12).round(2) %> <!-- 12% tax -->
+    <% grand_total   = subtotal_sum + estimated_tax %>
+
+    <div class="order-summary card">
+      <h2>Payment summary</h2>
+
+      <table class="table">
+        <tbody>
+          <tr class="order-summary-row">
+            <th>Items subtotal</th>
+            <td class="text-right"><%= number_to_currency(subtotal_sum) %></td>
+          </tr>
+          <tr class="order-summary-row">
+            <th>
+              Tax
+              <span class="badge-tax">12%</span>
+            </th>
+            <td class="text-right"><%= number_to_currency(estimated_tax) %></td>
+          </tr>
+          <tr class="order-summary-row order-summary-row-total">
+            <th>Total to pay</th>
+            <td class="text-right order-summary-total">
+              <strong><%= number_to_currency(grand_total) %></strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="text-muted">
+        For this course project, payment is simulated. When you click
+        <strong>Place order</strong>, your order will be saved and marked as paid.
+      </p>
+
+      <%= form_with url: orders_path, method: :post, local: true do |f| %>
+        <div class="text-right">
+          <%= link_to "Back to cart", cart_path, class: "btn btn-secondary" %>
+          <%= f.submit "Place order", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

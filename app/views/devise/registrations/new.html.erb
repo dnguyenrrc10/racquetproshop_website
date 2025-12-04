@@ -1,0 +1,70 @@
+<div class="card">
+  <div class="section-header">
+    <h1>Create your account</h1>
+    <p class="section-subtitle">
+      Sign up to save your orders and checkout faster.
+    </p>
+  </div>
+
+  <%= form_for(resource,
+               as: resource_name,
+               url: registration_path(resource_name)) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="mt-2">
+      <%= f.label :name %><br />
+      <%= f.text_field :name, autofocus: true, autocomplete: "name" %>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :email %><br />
+      <%= f.email_field :email, autocomplete: "email" %>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :address %><br />
+      <%= f.text_field :address, autocomplete: "street-address" %>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :city %><br />
+      <%= f.text_field :city %>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :province %><br />
+      <%= f.text_field :province %>
+      <p class="text-muted">
+        Example: MB, ON, BC. Your province will be used for invoices/taxes.
+      </p>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :postal_code %><br />
+      <%= f.text_field :postal_code, autocomplete: "postal-code" %>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :password %>
+      <% if @minimum_password_length %>
+        <span class="text-muted">
+          (<%= @minimum_password_length %> characters minimum)
+        </span>
+      <% end %><br />
+      <%= f.password_field :password, autocomplete: "new-password" %>
+    </div>
+
+    <div class="mt-2">
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+    </div>
+
+    <div class="mt-3">
+      <%= f.submit "Sign up", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+
+  <div class="mt-2">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

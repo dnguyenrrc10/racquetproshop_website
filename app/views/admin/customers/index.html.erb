@@ -1,0 +1,27 @@
+<h1>Customers with Orders</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Customer</th>
+      <th>Email</th>
+      <th># Orders</th>
+      <th>Last Order Date</th>
+      <th>Total Spent</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @customers.each do |customer| %>
+      <% orders = customer.orders %>
+      <tr>
+        <td><%= customer.respond_to?(:name) ? customer.name : customer.email.split("@").first %></td>
+        <td><%= customer.email %></td>
+        <td><%= orders.count %></td>
+        <td><%= orders.maximum(:created_at)&.strftime("%Y-%m-%d") %></td>
+        <td><%= number_to_currency(orders.sum(:grand_total)) %></td>
+        <td><%= link_to "View Details", admin_customer_path(customer), class: "btn btn-sm btn-primary" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

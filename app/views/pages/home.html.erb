@@ -1,0 +1,87 @@
+<div class="hero">
+  <div class="hero-main">
+    <div class="hero-highlight">Specialized Badminton Store · Winnipeg</div>
+    <h1>Racquets Pro Shop</h1>
+    <p>
+      Explore high-performance badminton racquets, shuttles, and accessories.
+      Built for players who want faster smashes, sharper control, and a smoother
+      shopping experience.
+    </p>
+
+    <div class="mt-2">
+      <%= link_to "Shop racquets", products_path, class: "btn btn-primary" %>
+      <%= link_to "View categories", categories_path, class: "btn btn-secondary" %>
+    </div>
+  </div>
+
+  <div class="hero-side">
+    <h2 class="hero-side-title">Why players choose us</h2>
+    <p class="text-muted">
+      Hand-picked frames from Yonex, Victor, and more — with local service
+      and stringing support.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-label">Premium racquets</div>
+        <div class="hero-stat-value">20+</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Stringing options</div>
+        <div class="hero-stat-value">10+</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">Local support</div>
+        <div class="hero-stat-value">Winnipeg</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="section-header">
+    <h2>Shop by category</h2>
+    <p class="section-subtitle">Quickly jump to the gear you need.</p>
+  </div>
+
+  <div class="form-inline">
+    <% @categories.each do |category| %>
+      <%= link_to category.name,
+                  category_path(category),
+                  class: "btn btn-secondary btn-small" %>
+    <% end %>
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="section-header">
+    <h2>Featured racquets</h2>
+    <p class="section-subtitle">Popular picks for intermediate and advanced players.</p>
+  </div>
+
+  <div class="products-grid">
+    <% @featured_products.each do |product| %>
+      <div class="product-card">
+        <div>
+          <p class="product-card-category"><%= product.category.name %></p>
+          <h3 class="product-card-title">
+            <%= link_to product.name, product_path(product) %>
+            <%= product_badges(product) %>
+          </h3>
+          <p class="text-muted"><%= truncate(product.description, length: 80) %></p>
+        </div>
+
+        <div class="product-card-footer">
+          <span class="product-card-price">
+            <%= number_to_currency(product.current_price) %>
+          </span>
+          <%= button_to "Add to cart",
+                        add_to_cart_path(product),
+                        method: :post,
+                        class: "btn btn-primary btn-small" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

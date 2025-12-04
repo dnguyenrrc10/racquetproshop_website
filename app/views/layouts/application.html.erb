@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Racquets Pro Shop</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body>
+    <header class="navbar">
+      <div class="navbar-inner container">
+        <div class="brand">
+          <%= link_to "Racquets Pro Shop", root_path, class: "brand-link" %>
+          <span class="tagline">Badminton Racquets & Gear</span>
+        </div>
+
+        <nav class="nav-links">
+          <%= link_to "Home", root_path, class: "nav-link" %>
+          <%= link_to "Shop", products_path, class: "nav-link" %>
+          <%= link_to "Categories", categories_path, class: "nav-link" %>
+          <%= link_to "Cart", cart_path, class: "nav-link" %>
+
+          <% if user_signed_in? %>
+            <% if current_user.admin? %>
+              <%= link_to "Admin", admin_root_path, class: "nav-link nav-link-admin" %>
+            <% end %>
+            <span class="nav-user">Hi, <%= current_user.name.presence || current_user.email %></span>
+            <%= button_to "Sign out",
+                          destroy_user_session_path,
+                          method: :delete,
+                          class: "btn btn-secondary btn-small",
+                          form: { class: "inline-form" } %>
+          <% else %>
+            <%= link_to "Sign in", new_user_session_path, class: "nav-link" %>
+            <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-small" %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="container">
+        <% flash.each do |key, value| %>
+          <div class="flash flash-<%= key %>"><%= value %></div>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <p>&copy; <%= Time.current.year %> Racquets Pro Shop. All rights reserved.</p>
+        <p class="footer-links">
+          <%= link_to "About", about_path %> ·
+          <%= link_to "Contact", contact_path %>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
