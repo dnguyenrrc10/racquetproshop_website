@@ -26,6 +26,7 @@
           <%= link_to "Cart", cart_path, class: "nav-link" %>
 
           <% if user_signed_in? %>
+            <%= link_to "Order History", orders_path,  class: "nax-link" %>
             <% if current_user.admin? %>
               <%= link_to "Admin", admin_root_path, class: "nav-link nav-link-admin" %>
             <% end %>
